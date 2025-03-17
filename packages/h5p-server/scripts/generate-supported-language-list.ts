@@ -9,7 +9,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 
 const languages = fsExtra.readdirSync(
-    path.resolve('../h5p-examples/h5p/editor/language')
+    path.resolve('../h5p-main/h5p/editor/language')
 );
 fsExtra.writeJsonSync(
     path.resolve('assets/editorLanguages.json'),

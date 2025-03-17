@@ -2,8 +2,8 @@
 {
     "exclude": ["node_modules", "**.d.ts"],
     "include": [
-        "packages/h5p-examples/src/**/*",
-        "packages/h5p-examples/test/**/*",
+        "packages/h5p-main/src/**/*",
+        "packages/h5p-main/test/**/*",
         "packages/h5p-express/src/**/*",
         "packages/h5p-express/test/**/*",
         "packages/h5p-html-exporter/src/**/*",
@@ -39,7 +39,7 @@
         "resolveJsonModule": true,
         "declaration": true,
         "paths": {
-            "@lumieducation/h5p-examples": ["packages/h5p-examples/src"],
+            "@lumieducation/h5p-main": ["packages/h5p-main/src"],
             "@lumieducation/h5p-express": ["packages/h5p-express/src"],
             "@lumieducation/h5p-html-exporter": [
                 "packages/h5p-html-exporter/src"

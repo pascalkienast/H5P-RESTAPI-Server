@@ -18,7 +18,7 @@ You can access the application by calling
 ## Commands
 
 Change directories to the directory that contains the `docker-compose.yml` file.
-(`packages/h5p-examples/cluster-mode`)
+(`packages/h5p-main/cluster-mode`)
 
 ### Startup (fires up 4 instances of h5p)
 

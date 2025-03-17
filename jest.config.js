@@ -139,10 +139,11 @@ module.exports = {
 
     // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
     testPathIgnorePatterns: [
-        'node_modules/',
+        '/node_modules/',
+        '/git/', 
+        'h5p-main/',
         'h5p-mongos3/',
         'h5p-html-exporter/',
-        'h5p-examples/',
         'integration/'
     ],
 

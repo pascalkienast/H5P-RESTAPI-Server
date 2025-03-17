@@ -45,7 +45,7 @@ This object is **a server-side component** that is long-lived and includes most
 of the methods that must be called when by the routes of your server. To find
 out what these routes are and how they must call H5PEditor, you can either check
 out the [section on content views in the docs](#creating-content-views) or the
-[Express example project](/packages/h5p-examples/src/expressRoutes.ts).
+[Express example project](/packages/h5p-main/src/expressRoutes.ts).
 
 To render a HTML page (server-side rendering) with the editor inside (= the
 HTML user interface around the actual editor and the editor itself) for a

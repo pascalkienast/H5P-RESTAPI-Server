@@ -18,7 +18,7 @@ application are provided by which package:
 -   The **green** parts come from one of the server-side packages of `h5p-nodejs-library`. While `@lumieducation/h5p-server` is also a dev dependency of the client, this is only the case to use the TypeScript interface definitions exported by it. The dependency (which can be rather large) is only required at build time and not at runtime.
 -   The **red** parts are React components that can be found in the package `@lumieducation/h5p-react`. The React components wrap around the web components from `@lumieducation/h5p-webcomponents`, which in turn wrap the actual core h5p player and editor JavaScript and simplify instantiation, loading, saving and event handling.
 -   The **blue** parts is comprised of JavaScript and CSS files that make up the core H5P player and editor. They are part of the original PHP repositories
-    and are downloaded from GitHub in the server with the script [`download-core.sh`](../../../packages/h5p-examples/download-core.sh). They must be served as static files by the server and are added to the page by the web components as needed.
+    and are downloaded from GitHub in the server with the script [`download-core.sh`](../../../packages/h5p-main/download-core.sh). They must be served as static files by the server and are added to the page by the web components as needed.
 
 ## Trying it out
 

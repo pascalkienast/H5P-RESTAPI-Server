@@ -34,7 +34,7 @@ used:
 
 | Example type | Tech stack | Location |
 | :--- | :--- | :--- |
-| server-side-rendering | server: Express with JS template rendering client: static HTML, some React for library management | [`/packages/h5p-examples`](https://github.com/Lumieducation/H5P-Nodejs-library/tree/master/packages/h5p-examples) |
+| server-side-rendering | server: Express with JS template rendering client: static HTML, some React for library management | [`/packages/h5p-main`](https://github.com/Lumieducation/H5P-Nodejs-library/tree/master/packages/h5p-main) |
 | [Single Page Application](https://docs.lumi.education/development/rest) | server: Express with REST endpoints client: React | [`/packages/h5p-rest-example-server`](https://github.com/Lumieducation/H5P-Nodejs-library/tree/master/packages/h5p-rest-example-server) [`/packages/h5p-rest-example-client`](https://github.com/Lumieducation/H5P-Nodejs-library/tree/master/packages/h5p-rest-example-server) |
 
 ## Versioning

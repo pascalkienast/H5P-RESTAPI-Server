@@ -75,7 +75,7 @@ const storage = new MongoS3ContentStorage(
 
 ## Using MongoS3ContentStorage in the example
 
-The [example Express application](/packages/h5p-examples/src/express.ts) can be
+The [example Express application](/packages/h5p-main/src/express.ts) can be
 configured to use the MongoDB/S3 storage by setting the environment variables
 from above and these additional variables:
 

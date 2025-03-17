@@ -16,7 +16,7 @@ jobs:
                   key: h5p-core-cache2-{{ checksum "scripts/install.sh" }}
             - run: npm ci
             - restore_cache:
-                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-main-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: |
                   npm run build --prefix packages/h5p-rest-example-client
                   npm run build --prefix packages/h5p-rest-example-server
@@ -25,22 +25,22 @@ jobs:
             - save_cache:
                   key: h5p-core-cache1-{{ checksum "scripts/install.sh" }}
                   paths:
-                      - /mnt/ramdisk/packages/h5p-examples/h5p
+                      - /mnt/ramdisk/packages/h5p-main/h5p
             - save_cache:
                   key: h5p-core-cache2-{{ checksum "scripts/install.sh" }}
                   paths:
                       - /mnt/ramdisk/packages/h5p-rest-example-server/h5p
             - save_cache:
-                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-main-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
                       - /mnt/ramdisk/test/data/hub-content
             - persist_to_workspace:
                   root: .
                   paths:
                       - node_modules
-                      - packages/h5p-examples/build
-                      - packages/h5p-examples/h5p
-                      - packages/h5p-examples/node_modules
+                      - packages/h5p-main/build
+                      - packages/h5p-main/h5p
+                      - packages/h5p-main/node_modules
                       - packages/h5p-express/build
                       - packages/h5p-express/node_modules
                       - packages/h5p-html-exporter/build

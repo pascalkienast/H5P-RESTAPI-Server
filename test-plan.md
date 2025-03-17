@@ -14,8 +14,8 @@
 ### Permutations of storage
 
 - [ ] File system storages (default)
-- [ ] MongoDB + S3 Storage + Redis Cache (rename mongo+s3+redis.env file in packages/h5p-examples to .env)
-- [ ] Pure MongoDB storage without cache (rename mongo+mongos3.env file in packages/h5p-examples to .env)
+- [ ] MongoDB + S3 Storage + Redis Cache (rename mongo+s3+redis.env file in packages/h5p-main to .env)
+- [ ] Pure MongoDB storage without cache (rename mongo+mongos3.env file in packages/h5p-main to .env)
 
 ## Tests: Library management
 

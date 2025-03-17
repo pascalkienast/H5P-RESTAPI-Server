@@ -54,8 +54,8 @@ async function importAndExportHtml(
                 libraryStorage,
                 contentStorage,
                 config,
-                path.resolve(`${__dirname}/../../h5p-examples/h5p/core`),
-                path.resolve(`${__dirname}/../../h5p-examples/h5p/editor`)
+                path.resolve(`${__dirname}/../../h5p-main/h5p/core`),
+                path.resolve(`${__dirname}/../../h5p-main/h5p/editor`)
             );
             const contentId = (
                 await packageImporter.addPackageLibrariesAndContent(
@@ -257,8 +257,8 @@ describe('HtmlExporter template', () => {
             libraryStorage,
             contentStorage,
             config,
-            path.resolve(`${__dirname}/../../h5p-examples/h5p/core`),
-            path.resolve(`${__dirname}/../../h5p-examples/h5p/editor`),
+            path.resolve(`${__dirname}/../../h5p-main/h5p/core`),
+            path.resolve(`${__dirname}/../../h5p-main/h5p/editor`),
             (
                 integration: IIntegration,
                 scriptsBundle: string,

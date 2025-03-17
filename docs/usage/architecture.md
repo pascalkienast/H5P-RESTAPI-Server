@@ -37,7 +37,7 @@ comparable way to the structure in the diagram.
 ## Example implementation
 
 There is a basic example implementation of the server and client (blue parts)
-using Express (and server-side rendering) in the `/packages/h5p-examples`
+using Express (and server-side rendering) in the `/packages/h5p-main`
 folder. There is also a more advanced SPA example in the
 `/packages/h5p-rest-example-server` and `/packages/h5p-rest-example-client`
 folders. Check out the documentation on it

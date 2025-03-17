@@ -47,7 +47,7 @@ used:
 
 | Example type | Tech stack | Location |
 | :--- | :--- | :--- |
-| server-side-rendering | server: Express with JS template rendering client: static HTML, some React for library management | `/packages/h5p-examples` |
+| server-side-rendering | server: Express with JS template rendering client: static HTML, some React for library management | `/packages/h5p-main` |
 | [Single Page Application](examples/rest/README.md) | server: Express with REST endpoints client: React | `/packages/h5p-rest-example-server` `/packages/h5p-rest-example-client` |
 
 ## Trying out the demo
