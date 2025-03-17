@@ -549,88 +549,140 @@ When editing H5P content via the API, follow these best practices:
 
 Here are examples of common editing operations for different content types:
 
-**Adding an answer option to Multiple Choice:**
-```json
-{
-  "library": "H5P.MultiChoice 1.16",
-  "params": {
-    "metadata": { "title": "Quiz Title" },
-    "params": {
-      "question": "Original question",
-      "answers": [
-        {"text": "Existing option 1", "correct": true},
-        {"text": "Existing option 2", "correct": false},
-        {"text": "New option", "correct": false}
-      ]
-    }
-  }
-}
-```
+#### Branching Scenario Content Structure
 
-**Updating an image in Course Presentation:**
-```json
-{
-  "library": "H5P.CoursePresentation 1.25",
-  "params": {
-    "metadata": { "title": "Presentation Title" },
+The Branching Scenario content type allows you to create interactive pathways through content. Here's an example of the basic structure for creating a branching scenario:
+
+```bash
+# Create a Branching Scenario
+curl -X POST "http://localhost:8080/h5p/new" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "library": "H5P.BranchingScenario 1.7",
     "params": {
-      "presentation": {
-        "slides": [
-          {
-            "elements": [
-              {
-                "action": {
-                  "library": "H5P.Image 1.1",
-                  "params": {
-                    "file": {
-                      "path": "images/new_image-8f7e2d4b.jpg",
-                      "mime": "image/jpeg",
-                      "copyright": { "license": "U" }
+      "params": {
+        "branchingScenario": {
+          "startScreen": {
+            "startScreenTitle": "Example Branching Scenario",
+            "startScreenSubtitle": "Make choices and follow different paths",
+            "startScreenImage": {
+              "path": "https://example.com/image.jpg",
+              "mime": "image/jpeg",
+              "copyright": {
+                "license": "U"
+              },
+              "width": 900,
+              "height": 600
+            }
+          },
+          "content": [
+            {
+              "id": "1",
+              "contentType": "H5P.BranchingQuestion 1.0",
+              "nextContentId": "-1",
+              "params": {
+                "branchingQuestion": {
+                  "question": "<p>Which path would you like to take?</p>",
+                  "alternatives": [
+                    {
+                      "text": "Path A",
+                      "nextContentId": "2"
+                    },
+                    {
+                      "text": "Path B",
+                      "nextContentId": "3"
                     }
-                  }
+                  ]
                 }
               }
-            ]
-          }
-        ]
+            },
+            {
+              "id": "2",
+              "contentType": "H5P.AdvancedText 1.1",
+              "nextContentId": "-1",
+              "params": {
+                "text": "<p>You chose Path A</p>"
+              }
+            },
+            {
+              "id": "3",
+              "contentType": "H5P.AdvancedText 1.1",
+              "nextContentId": "-1",
+              "params": {
+                "text": "<p>You chose Path B</p>"
+              }
+            }
+          ],
+          "endScreens": [
+            {
+              "id": "0-1",
+              "contentType": "H5P.StandardPage 1.5",
+              "showBackButton": false,
+              "showProceedButton": true,
+              "scoreScreen": false,
+              "params": {
+                "text": "<p>You have completed this scenario.</p>"
+              },
+              "feedback": {
+                "title": "Completed!",
+                "subtitle": "You have completed this branching scenario."
+              }
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "title": "API Example Branching Scenario",
+        "license": "U"
       }
     }
-  }
-}
+  }'
 ```
 
-**Adding a page to Interactive Book:**
-```json
-{
-  "library": "H5P.InteractiveBook 1.11",
-  "params": {
-    "metadata": { "title": "Book Title" },
-    "params": {
-      "chapters": [
-        // Existing chapters here
-        {
-          "params": {
-            "content": [
-              {
-                "content": {
-                  "library": "H5P.AdvancedText 1.1",
-                  "params": {
-                    "text": "<p>New chapter content</p>"
-                  }
-                }
-              }
-            ]
-          },
-          "library": "H5P.Column 1.18",
-          "metadata": {
-            "title": "New Chapter Title"
-          }
-        }
-      ]
-    }
-  }
-}
-```
+**IMPORTANT NOTE ON STRUCTURE**: Pay special attention to the structure of the JSON:
+- The content parameters must be under `params.params.branchingScenario` (double nesting)
+- The title and license must be under `params.metadata`
+- This double params nesting is a critical requirement for the API and different from some examples you may see elsewhere
+
+**Key elements in a Branching Scenario:**
+
+1. **Start Screen**: Defines the title, subtitle, and optional image for the beginning of the scenario.
+
+2. **Content Array**: Contains all content nodes in the branching path:
+   - Each content node has a unique `id` (typically a number as a string)
+   - `contentType` specifies the H5P content type to use (common types: H5P.BranchingQuestion, H5P.AdvancedText)
+   - `nextContentId` determines where to go next:
+     - A number (as string) points to another content node by id
+     - "-1" indicates to show the end screen
+
+3. **Branching Questions**:
+   - Create decision points with the H5P.BranchingQuestion content type
+   - Define `alternatives` with text and where each choice leads (`nextContentId`)
+
+4. **Content Screens**:
+   - Can use various content types like H5P.AdvancedText, H5P.Image, etc.
+   - Include the content-specific parameters in the `params` object
+
+5. **End Screens**:
+   - Define what happens when scenarios end
+   - You can have multiple end screens for different paths (identified by their `id`)
+   - Configure options like back/proceed buttons and feedback text
+
+**Important notes:**
+
+- The content IDs must be unique strings, and the flow must be correctly configured
+- `nextContentId` values must refer to valid IDs in the content array or "-1" for end screens
+- Each content type requires its own specific parameter structure
+- Be careful with circular references that could create infinite loops
+
+**Example content types you can use within a branching scenario:**
+
+- H5P.BranchingQuestion: For decision points with multiple choices
+- H5P.AdvancedText: For text-based screens
+- H5P.Image: For image-based screens
+- H5P.Video: For video screens
+- H5P.InteractiveVideo: For interactive video screens
+- H5P.CoursePresentation: For more complex slide-based content
 
 ### Retrieving Content Parameters
 
@@ -1515,3 +1567,245 @@ Response:
 ```
 
 The accordion content type allows you to create collapsible content sections. Each panel has a title and HTML content that expands when clicked. This is useful for FAQs, step-by-step guides, or any content that benefits from progressive disclosure.
+
+#### Creating an Interactive Book
+
+```bash
+# Create a basic interactive book with two chapters
+curl -X POST "http://localhost:8080/h5p/new" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "library": "H5P.InteractiveBook 1.7",
+    "params": {
+      "params": {
+        "showCoverPage": true,
+        "bookCover": {
+          "coverDescription": "<p>This is an example interactive book created via the API.</p>",
+          "coverMedium": {
+            "params": {
+              "file": {
+                "path": "https://images.unsplash.com/photo-1532012197267-da84d127e765",
+                "mime": "image/jpeg",
+                "copyright": {"license": "U"},
+                "width": 800,
+                "height": 600
+              },
+              "decorative": false
+            },
+            "library": "H5P.Image 1.1",
+            "subContentId": "fe938ea1-35ca-45b7-86d0-3b56f8ed707d"
+          }
+        },
+        "chapters": [
+          {
+            "params": {
+              "content": [
+                {
+                  "content": {
+                    "params": {
+                      "text": "<h2>Chapter One</h2><p>This is the content of the first chapter created through the API.</p>"
+                    },
+                    "library": "H5P.AdvancedText 1.1",
+                    "metadata": {
+                      "contentType": "Text",
+                      "license": "U",
+                      "title": "Untitled Text",
+                      "authors": [],
+                      "changes": []
+                    },
+                    "subContentId": "83e73ab7-52dd-4482-b4de-b18c94c93b2a"
+                  },
+                  "useSeparator": "auto"
+                },
+                {
+                  "content": {
+                    "params": {
+                      "question": "<p>What is this example demonstrating?</p>",
+                      "answers": [
+                        {"text": "How to create an Interactive Book via API", "correct": true},
+                        {"text": "How to write a novel", "correct": false},
+                        {"text": "Nothing at all", "correct": false}
+                      ]
+                    },
+                    "library": "H5P.MultiChoice 1.16",
+                    "metadata": {
+                      "contentType": "Multiple Choice",
+                      "license": "U", 
+                      "title": "API Question",
+                      "authors": [],
+                      "changes": []
+                    },
+                    "subContentId": "c7457dc3-6fba-47d7-a909-20bafc918cb6"
+                  },
+                  "useSeparator": "auto"
+                }
+              ]
+            },
+            "library": "H5P.Column 1.16",
+            "metadata": {
+              "contentType": "Interaktive Seite (Column)",
+              "license": "U",
+              "title": "Chapter One",
+              "authors": [],
+              "changes": [],
+              "extraTitle": "Chapter One"
+            },
+            "subContentId": "2e81d02c-871b-40c4-ae33-9ad30c95169c"
+          },
+          {
+            "params": {
+              "content": [
+                {
+                  "content": {
+                    "params": {
+                      "text": "<h2>Chapter Two</h2><p>This is the content of the second chapter.</p><p>Each chapter can contain multiple interactive elements.</p>"
+                    },
+                    "library": "H5P.AdvancedText 1.1",
+                    "metadata": {
+                      "contentType": "Text",
+                      "license": "U",
+                      "title": "Untitled Text",
+                      "authors": [],
+                      "changes": []
+                    },
+                    "subContentId": "ea28d0e3-cf11-41c0-b2e5-f8f5b279a24b"
+                  },
+                  "useSeparator": "auto"
+                }
+              ]
+            },
+            "library": "H5P.Column 1.16",
+            "metadata": {
+              "contentType": "Interaktive Seite (Column)",
+              "license": "U",
+              "title": "Chapter Two",
+              "authors": [],
+              "changes": [],
+              "extraTitle": "Chapter Two"
+            },
+            "subContentId": "6a644281-aa72-4650-ae00-6bf172d56030"
+          }
+        ],
+        "behaviour": {
+          "defaultTableOfContents": true,
+          "progressIndicators": true,
+          "displaySummary": true
+        }
+      },
+      "metadata": {
+        "title": "API Example Book",
+        "license": "U"
+      }
+    }
+  }'
+```
+
+The Interactive Book content type allows you to create book-like experiences with multiple chapters, each containing various interactive elements. Each chapter is essentially a Column content type that can include text, images, videos, questions, and other H5P content types. The book includes features like a table of contents, progress indicators, and a cover page.
+
+**Important notes for Interactive Book:**
+1. Each chapter **requires** a `metadata` field with properties:
+   - `contentType`: Should be "Interaktive Seite (Column)"
+   - `title`: The chapter title that appears in the table of contents
+   - `license`: Usually "U" for undefined
+   - `authors` and `changes`: Can be empty arrays but must be present
+   - `extraTitle`: Should match the `title` property
+
+2. Each content element should have:
+   - A `subContentId` property with a unique UUID
+   - Appropriate `metadata` with `contentType`, `license`, `title`, `authors`, and `changes`
+
+3. Missing any of these fields can cause rendering errors that may be difficult to debug.
+
+#### Creating a Branching Scenario
+
+```bash
+# Create a simple branching scenario with two slides and a decision point
+curl -X POST "http://localhost:8080/h5p/new" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "library": "H5P.BranchingScenario 1.7",
+    "params": {
+      "params": {
+        "branchingScenario": {
+          "startScreen": {
+            "startScreenTitle": "API Example Branching Scenario",
+            "startScreenSubtitle": "Created via REST API",
+            "startScreenImage": {
+              "path": "https://images.unsplash.com/photo-1455849318743-b2233052fcff",
+              "mime": "image/jpeg",
+              "copyright": {"license": "U"},
+              "width": 900,
+              "height": 600
+            }
+          },
+          "content": [
+            {
+              "id": "1",
+              "contentType": "H5P.BranchingQuestion 1.0",
+              "nextContentId": "-1",
+              "feedback": {
+                "title": "You made a choice!",
+                "subtitle": "Let's see where it leads"
+              },
+              "params": {
+                "branchingQuestion": {
+                  "alternatives": [
+                    {
+                      "nextContentId": "2",
+                      "text": "Go to the information slide"
+                    },
+                    {
+                      "nextContentId": "3",
+                      "text": "Skip to the end"
+                    }
+                  ],
+                  "question": "<p>Which path would you like to take?</p>"
+                }
+              }
+            },
+            {
+              "id": "2",
+              "contentType": "H5P.AdvancedText 1.1",
+              "nextContentId": "3",
+              "params": {
+                "text": "<h2>Information Slide</h2><p>This is a simple text slide in the branching scenario.</p><p>After viewing this slide, you'll automatically proceed to the end.</p>"
+              }
+            },
+            {
+              "id": "3",
+              "contentType": "H5P.AdvancedText 1.1",
+              "nextContentId": "-1",
+              "params": {
+                "text": "<h2>End of Scenario</h2><p>You've reached the end of this example branching scenario.</p>"
+              }
+            }
+          ],
+          "endScreens": [
+            {
+              "id": "0-1",
+              "contentType": "H5P.StandardPage 1.5",
+              "showBackButton": false,
+              "showProceedButton": true,
+              "scoreScreen": false,
+              "params": {
+                "text": "<p>Thanks for exploring this API example.</p>"
+              }
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "title": "API Branching Scenario Example",
+        "license": "U"
+      }
+    }
+  }'
+```
+
+The Branching Scenario content type enables you to create interactive, non-linear learning experiences. It allows users to make decisions that affect their path through the content. Each scenario consists of:
+- A start screen with title and optional image
+- Content slides of various types (text, videos, questions, etc.)
+- Branching questions that determine the user's path
+- End screens that can provide feedback based on the path taken
+
+Branching Scenarios are particularly useful for simulations, decision-based learning, and scenario-based training where different choices lead to different outcomes.

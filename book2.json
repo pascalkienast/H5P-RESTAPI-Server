@@ -1,0 +1,124 @@
+{
+  "library": "H5P.InteractiveBook 1.7",
+  "params": {
+    "params": {
+      "showCoverPage": true,
+      "bookCover": {
+        "coverDescription": "<p>This is an example interactive book created via the API.</p>",
+        "coverMedium": {
+          "params": {
+            "file": {
+              "path": "https://images.unsplash.com/photo-1532012197267-da84d127e765",
+              "mime": "image/jpeg",
+              "copyright": {"license": "U"},
+              "width": 800,
+              "height": 600
+            },
+            "decorative": false
+          },
+          "library": "H5P.Image 1.1",
+          "subContentId": "fe938ea1-35ca-45b7-86d0-3b56f8ed707d"
+        }
+      },
+      "chapters": [
+        {
+          "params": {
+            "content": [
+              {
+                "content": {
+                  "params": {
+                    "text": "<h2>Chapter One</h2><p>This is the content of the first chapter created through the API.</p>"
+                  },
+                  "library": "H5P.AdvancedText 1.1",
+                  "metadata": {
+                    "contentType": "Text",
+                    "license": "U",
+                    "title": "Untitled Text",
+                    "authors": [],
+                    "changes": []
+                  },
+                  "subContentId": "83e73ab7-52dd-4482-b4de-b18c94c93b2a"
+                },
+                "useSeparator": "auto"
+              },
+              {
+                "content": {
+                  "params": {
+                    "question": "<p>What is this example demonstrating?</p>",
+                    "answers": [
+                      {"text": "How to create an Interactive Book via API", "correct": true},
+                      {"text": "How to write a novel", "correct": false},
+                      {"text": "Nothing at all", "correct": false}
+                    ]
+                  },
+                  "library": "H5P.MultiChoice 1.16",
+                  "metadata": {
+                    "contentType": "Multiple Choice",
+                    "license": "U", 
+                    "title": "API Question",
+                    "authors": [],
+                    "changes": []
+                  },
+                  "subContentId": "c7457dc3-6fba-47d7-a909-20bafc918cb6"
+                },
+                "useSeparator": "auto"
+              }
+            ]
+          },
+          "library": "H5P.Column 1.16",
+          "metadata": {
+            "contentType": "Interaktive Seite (Column)",
+            "license": "U",
+            "title": "Chapter One",
+            "authors": [],
+            "changes": [],
+            "extraTitle": "Chapter One"
+          },
+          "subContentId": "2e81d02c-871b-40c4-ae33-9ad30c95169c"
+        },
+        {
+          "params": {
+            "content": [
+              {
+                "content": {
+                  "params": {
+                    "text": "<h2>Chapter Two</h2><p>This is the content of the second chapter.</p><p>Each chapter can contain multiple interactive elements.</p>"
+                  },
+                  "library": "H5P.AdvancedText 1.1",
+                  "metadata": {
+                    "contentType": "Text",
+                    "license": "U",
+                    "title": "Untitled Text",
+                    "authors": [],
+                    "changes": []
+                  },
+                  "subContentId": "ea28d0e3-cf11-41c0-b2e5-f8f5b279a24b"
+                },
+                "useSeparator": "auto"
+              }
+            ]
+          },
+          "library": "H5P.Column 1.16",
+          "metadata": {
+            "contentType": "Interaktive Seite (Column)",
+            "license": "U",
+            "title": "Chapter Two",
+            "authors": [],
+            "changes": [],
+            "extraTitle": "Chapter Two"
+          },
+          "subContentId": "6a644281-aa72-4650-ae00-6bf172d56030"
+        }
+      ],
+      "behaviour": {
+        "defaultTableOfContents": true,
+        "progressIndicators": true,
+        "displaySummary": true
+      }
+    },
+    "metadata": {
+      "title": "Fixed API Example Book v2",
+      "license": "U"
+    }
+  }
+} 
