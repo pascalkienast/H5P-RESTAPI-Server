@@ -13,6 +13,10 @@ echo "==> NPM version: $(npm -v)"
 mkdir -p /app/data/storage
 mkdir -p /app/data/logs
 
+# Set proper permissions for data directories as recommended by Cloudron
+chown -R cloudron:cloudron /app/data/storage /app/data/logs
+chmod -R 755 /app/data/storage /app/data/logs
+
 # Set environment variables
 export DATA_DIR="/app/data/storage"
 export LOG_DIR="/app/data/logs"

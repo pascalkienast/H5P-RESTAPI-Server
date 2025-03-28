@@ -1,13 +1,16 @@
 FROM node:lts-alpine
 
 # Set up working directory
-WORKDIR /app
+WORKDIR /app/data
 
 # Set environment variables to skip Husky installation
 ENV HUSKY=0
 ENV HUSKY_SKIP_INSTALL=1
 ENV HUSKY_SKIP_HOOKS=1
 ENV INIT_CWD=/app
+
+# Create cloudron user and group for proper permissions handling
+RUN addgroup -S cloudron && adduser -S -G cloudron cloudron
 
 # Copy the entire application first
 COPY . .
@@ -22,6 +25,7 @@ RUN if grep -q "\"prepare\":" package.json; then \
 
 # Make the data directory - Cloudron will mount volume here
 RUN mkdir -p /app/data
+RUN chown -R cloudron:cloudron /app/data
 
 # Make start script executable
 RUN chmod +x /app/start.sh
