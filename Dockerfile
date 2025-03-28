@@ -1,7 +1,8 @@
 FROM node:lts-alpine
 
 # Set up working directory
-WORKDIR /app
+RUN mkdir -p /app/data
+WORKDIR /app/data
 
 # Set environment variables to skip Husky installation
 ENV HUSKY=0
@@ -28,7 +29,7 @@ RUN mkdir -p /app/data
 RUN chown -R cloudron:cloudron /app/data
 
 # Make start script executable
-RUN chmod +x /app/start.sh
+RUN chmod +x /app/data/start.sh
 
 # Install dependencies - after all files are copied
 # Skip husky and git hooks
@@ -40,4 +41,4 @@ RUN npm install --ignore-scripts && \
 EXPOSE 8080
 
 # Command to run the application
-CMD ["/app/start.sh"] 
+CMD ["/app/data/start.sh"] 
