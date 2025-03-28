@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+.github
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build artifacts
+dist
+build
+*.tsbuildinfo
+
+# Development files
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+coverage
+.nyc_output
+
+# Cloudron specific
+CloudronManifest.json
+
+# Other
+.editorconfig
+.eslintrc
+.prettierrc
+README.md
+CHANGELOG.md
+LICENSE
+*.md 

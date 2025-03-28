@@ -2,7 +2,7 @@
 
 This document provides detailed information about the REST API endpoints for working with H5P content. Each section follows a logical user flow, from discovering content types to creating and managing interactive content.
 
-## Table of Contents
+## Table of Contentsx
 - [Introduction](#introduction)
   - [Architecture Overview](#architecture-overview)
   - [Communication Flow](#communication-flow)

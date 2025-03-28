@@ -1,0 +1,38 @@
+{
+  "id": "edu.lumi.h5p-restapi-server",
+  "title": "H5P REST API Server",
+  "author": "Lumi Education and Pascal Kienast",
+  "description": "REST API Server for H5P content and interactive elements",
+  "tagline": "Host and serve H5P interactive content via REST API",
+  "version": "1.0.0",
+  "healthCheckPath": "/",
+  "httpPort": 8080,
+  "manifestVersion": 2,
+  "website": "https://github.com/pascalkienast/H5P-RESTAPI-Server",
+  "contactEmail": "info@example.com",
+  "icon": "",
+  "memoryLimit": 512,
+  "addons": {
+    "localstorage": {}
+  },
+  "tags": [
+    "h5p",
+    "education",
+    "learning",
+    "interactive",
+    "api"
+  ],
+  "documentationUrl": "https://github.com/pascalkienast/H5P-RESTAPI-Server/blob/master/README.md",
+  "postInstallMessage": "The H5P REST API Server has been successfully installed. You can now use it to serve H5P content.",
+  "minBoxVersion": "5.0.0",
+  "forumUrl": "https://github.com/pascalkienast/H5P-RESTAPI-Server/issues",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "description": "Initial release of H5P REST API Server"
+    }
+  ],
+  "mediaLinks": [
+    "https://h5p.org/sites/default/files/h5p/content/1297/images/image-6083bebbcc3f1.jpg"
+  ]
+} 
