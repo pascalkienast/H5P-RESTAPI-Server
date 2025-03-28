@@ -5,7 +5,7 @@
  */
 class H5peditorFile {
   private $result, $field, $interface;
-  public $type, $name, $path, $mime, $size, $extension;
+  public $type, $name, $path, $mime, $size;
 
   /**
    * Constructor. Process data for file uploaded through the editor.

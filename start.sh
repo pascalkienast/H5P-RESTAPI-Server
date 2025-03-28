@@ -20,10 +20,15 @@ export LOG_DIR="/app/data/logs"
 # Create symlinks if necessary
 cd /app
 
-# Install dependencies if they're not already installed
-if [ ! -d "node_modules" ]; then
-  echo "==> Installing dependencies..."
-  npm install
+# Check if we need to build the application
+if [ ! -d "packages/h5p-server/build" ]; then
+  echo "==> Building application..."
+  # Run build processes individually to avoid errors stopping the startup
+  npm run build:h5p-server || echo "Warning: Server build failed"
+  npm run build:h5p-express || echo "Warning: Express build failed"
+  npm run build:h5p-html-exporter || echo "Warning: HTML exporter build failed"
+  npm run build:h5p-react || echo "Warning: React build failed"
+  npm run build:h5p-webcomponents || echo "Warning: Web components build failed"
 fi
 
 # Start the application
