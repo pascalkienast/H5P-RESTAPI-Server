@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM cloudron/base:5.0.0@sha256:04fd70dbd8ad6149c19de39e35718e024417c3e01dc9c6637eaf4a41ec4e596c
 
 # Set up working directory
 RUN mkdir -p /app/data
