@@ -1,19 +1,26 @@
-FROM cloudron/base:5.0.0@sha256:04fd70dbd8ad6149c19de39e35718e024417c3e01dc9c6637eaf4a41ec4e596c
+FROM cloudron/base:5.0.0
 
-# Set up working directory
+# Set up primary application working directory
+WORKDIR /app
+
+# Create the data directory for Cloudron's volume mount
+# Ensure it exists before chown
 RUN mkdir -p /app/data
-WORKDIR /app/data
 
-# Set environment variables to skip Husky installation
+# Set environment variables
 ENV HUSKY=0
 ENV HUSKY_SKIP_INSTALL=1
 ENV HUSKY_SKIP_HOOKS=1
 ENV INIT_CWD=/app
 
-# Create cloudron user and group for proper permissions handling
-RUN addgroup -S cloudron && adduser -S -G cloudron cloudron
+# cloudron user/group are expected to be present in the base image
+# RUN addgroup --system cloudron && adduser --system --ingroup cloudron --no-create-home cloudron
 
-# Copy the entire application first
+# Set ownership for the data directory mount point
+# Cloudron requires this directory to be owned by the cloudron user
+RUN chown -R cloudron:cloudron /app/data
+
+# Copy the entire application into /app
 COPY . .
 
 # Remove Git and Husky-related files to prevent hooks from running
@@ -24,12 +31,8 @@ RUN if grep -q "\"prepare\":" package.json; then \
     sed -i 's/"prepare": "husky install",/"prepare": "",/g' package.json || true; \
     fi
 
-# Make the data directory - Cloudron will mount volume here
-RUN mkdir -p /app/data
-RUN chown -R cloudron:cloudron /app/data
-
-# Make start script executable
-RUN chmod +x /app/data/start.sh
+# Make start script executable (now located at /app/start.sh)
+RUN chmod +x /app/start.sh
 
 # Install dependencies - after all files are copied
 # Skip husky and git hooks
@@ -40,5 +43,5 @@ RUN npm install --ignore-scripts && \
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Command to run the application
-CMD ["/app/data/start.sh"] 
+# Command to run the application (now located at /app/start.sh)
+CMD ["/app/start.sh"] 

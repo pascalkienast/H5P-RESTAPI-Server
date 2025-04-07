@@ -26,8 +26,7 @@ export default function render(
         </head>
         <body>
             <div class="container">
-                <h1>H5P NodeJs Demo</h1>
-                <div class="alert alert-warning">This demo is for debugging and demonstration purposes only and not suitable for production use!</div>                
+                <h1>H5P NodeJs API</h1>
                 <h2>
                     <span class="fa fa-file"></span> Existing content
                 </h2>

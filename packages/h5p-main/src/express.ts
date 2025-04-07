@@ -8,6 +8,7 @@ import i18next from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
+import fs from 'fs-extra';
 
 import {
     h5pAjaxExpressRouter,
@@ -26,11 +27,26 @@ import { displayIps, clearTempFiles } from './utils';
 
 let tmpDir: DirectoryResult;
 
+// Determine the correct paths based on environment variables or defaults
+const dataDir = process.env.DATA_DIR || path.join(__dirname, '../h5p'); // Default for local dev
+const contentPath = path.join(dataDir, 'content');
+const userDataPath = path.join(dataDir, 'user-data');
+const librariesPath = path.join(__dirname, '../h5p/libraries'); // Libraries are part of the build, likely read-only access needed
+const temporaryPath = '/tmp'; // Use Cloudron's writable /tmp for temporary files
+
+// Ensure target directories exist within the writable data directory
+// Note: This might be better placed in start.sh, but doing it here ensures it
+// works if start.sh logic changes. fs-extra handles mkdirp.
+fs.ensureDirSync(contentPath);
+fs.ensureDirSync(userDataPath);
+
 const start = async (): Promise<void> => {
     const useTempUploads = process.env.TEMP_UPLOADS === 'true';
-    if (useTempUploads) {
+    if (useTempUploads && process.env.NODE_ENV !== 'production') { // Use tmp-promise only locally
+        // In Cloudron, /tmp is already available and managed.
         tmpDir = await dir({ keep: false, unsafeCleanup: true });
     }
+    const effectiveTempPath = useTempUploads && tmpDir ? tmpDir.path : temporaryPath;
 
     // We use i18next to localize messages sent to the user. You can use any
     // localization library you like.
@@ -85,15 +101,10 @@ const start = async (): Promise<void> => {
     // H5P.fs(...).
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
-        path.join(__dirname, '../h5p/libraries'), // the path on the local disc where
-        // libraries should be stored)
-        path.join(__dirname, '../h5p/content'), // the path on the local disc where content
-        // is stored. Only used / necessary if you use the local filesystem
-        // content storage class.
-        path.join(__dirname, '../h5p/temporary-storage'), // the path on the local disc
-        // where temporary files (uploads) should be stored. Only used /
-        // necessary if you use the local filesystem temporary storage class.,
-        path.join(__dirname, '../h5p/user-data'),
+        librariesPath, // Use the path determined above
+        contentPath, // Use the path determined above (writable in Cloudron)
+        effectiveTempPath, // Use the path determined above (writable in Cloudron)
+        userDataPath, // Use the path determined above (writable in Cloudron)
         (key, language) => translationFunction(key, { lng: language })
     );
 
@@ -124,12 +135,12 @@ const start = async (): Promise<void> => {
         fileUpload({
             limits: { fileSize: h5pEditor.config.maxTotalSize },
             useTempFiles: useTempUploads,
-            tempFileDir: useTempUploads ? tmpDir?.path : undefined
+            tempFileDir: effectiveTempPath // Use the determined temp path
         })
     );
 
     // delete temporary files left over from uploads
-    if (useTempUploads) {
+    if (useTempUploads && tmpDir) { // Only cleanup tmp-promise directory
         server.use((req: express.Request & { files: any }, res, next) => {
             res.on('finish', async () => clearTempFiles(req));
             next();
@@ -238,7 +249,7 @@ const start = async (): Promise<void> => {
     );
 
     // Remove temporary directory on shutdown
-    if (useTempUploads) {
+    if (useTempUploads && tmpDir) { // Only cleanup tmp-promise directory
         [
             'beforeExit',
             'uncaughtException',
