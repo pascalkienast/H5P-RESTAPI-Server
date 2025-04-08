@@ -26,11 +26,12 @@ cd /app
 if [ ! -d "packages/h5p-server/build" ]; then
   echo "==> Building application..."
   # Run build processes individually to avoid errors stopping the startup
-  npm run build:h5p-server || echo "Warning: Server build failed"
-  npm run build:h5p-express || echo "Warning: Express build failed"
-  npm run build:h5p-html-exporter || echo "Warning: HTML exporter build failed"
-  npm run build:h5p-react || echo "Warning: React build failed"
-  npm run build:h5p-webcomponents || echo "Warning: Web components build failed"
+  npm run build || echo "Warning: build failed"
+  #npm run build:h5p-server || echo "Warning: Server build failed"
+ # npm run build:h5p-express || echo "Warning: Express build failed"
+  #npm run build:h5p-html-exporter || echo "Warning: HTML exporter build failed"
+  #npm run build:h5p-react || echo "Warning: React build failed"
+ # npm run build:h5p-webcomponents || echo "Warning: Web components build failed"
 fi
 
 # Start the application as the cloudron user for security
