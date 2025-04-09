@@ -5,13 +5,15 @@ WORKDIR /app
 
 # Create the data directory for Cloudron's volume mount
 # Ensure it exists before chown
-RUN mkdir -p /app/data
+RUN mkdir -p /app/data && chown -R cloudron:cloudron /app/data
 
 # Set environment variables
 ENV HUSKY=0
 ENV HUSKY_SKIP_INSTALL=1
 ENV HUSKY_SKIP_HOOKS=1
 ENV INIT_CWD=/app
+# Prevent potential issues with incompatible husky installs in docker
+ENV HUSKY_SKIP_HOOKS=1
 
 # cloudron user/group are expected to be present in the base image
 # RUN addgroup --system cloudron && adduser --system --ingroup cloudron --no-create-home cloudron
@@ -20,21 +22,22 @@ ENV INIT_CWD=/app
 # Cloudron requires this directory to be owned by the cloudron user
 RUN chown -R cloudron:cloudron /app/data
 
-# Copy package files first for better layer caching
+# Copy ALL package manifests first to leverage Docker cache
 COPY package.json package-lock.json* ./
-# Copy lerna config if it exists
-COPY lerna.json* ./
-# Copy workspace package.json files (adjust pattern if needed)
-COPY packages/*/*.json packages/
+COPY lerna.json* ./  # Copy Lerna config if present
+# Copy the packages directory structure and their package.json files
+# This helps npm/lerna understand the workspace structure
+COPY packages/ packages/
 
-# Install ALL dependencies (including devDependencies needed for build)
-# Ensure clean install in case of previous partial installs
-RUN rm -rf node_modules && npm install --ignore-scripts
+# Install ALL dependencies using npm ci for reproducibility
+# This installs devDependencies needed for build as well.
+RUN npm ci
 
 # Copy the rest of the application source code
+# This will overwrite placeholders copied earlier but ensures all code is present
 COPY . .
 
-# Remove Git and Husky-related files AFTER copying everything
+# Remove Git/Husky AFTER copying everything and AFTER install
 RUN rm -rf .git .husky
 
 # Build the application (compile TS to JS, etc.)
@@ -42,7 +45,7 @@ RUN rm -rf .git .husky
 RUN npm run build
 
 # Optional: Prune devDependencies after build to reduce image size
-# RUN npm prune --production
+# RUN npm prune --omit=dev
 
 # Make start script executable
 RUN chmod +x /app/start.sh
