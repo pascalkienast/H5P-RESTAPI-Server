@@ -22,9 +22,9 @@ ENV HUSKY_SKIP_HOOKS=1
 # Cloudron requires this directory to be owned by the cloudron user
 RUN chown -R cloudron:cloudron /app/data
 
-# Copy ALL package manifests first to leverage Docker cache
-COPY package.json package-lock.json* ./
-COPY lerna.json* ./  # Copy Lerna config if present
+# Copy ALL package manifests and Lerna config first to leverage Docker cache
+COPY package.json package-lock.json* lerna.json* ./
+
 # Copy the packages directory structure and their package.json files
 # This helps npm/lerna understand the workspace structure
 COPY packages/ packages/
@@ -33,11 +33,15 @@ COPY packages/ packages/
 # This installs devDependencies needed for build as well.
 RUN npm ci
 
+# Explicitly run lerna bootstrap to ensure cross-package linking
+# The --ci flag respects package-lock and doesn't modify it
+RUN npx lerna bootstrap --ci
+
 # Copy the rest of the application source code
 # This will overwrite placeholders copied earlier but ensures all code is present
 COPY . .
 
-# Remove Git/Husky AFTER copying everything and AFTER install
+# Remove Git/Husky AFTER copying everything and AFTER install/bootstrap
 RUN rm -rf .git .husky
 
 # Build the application (compile TS to JS, etc.)
