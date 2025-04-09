@@ -14,6 +14,8 @@ ENV HUSKY_SKIP_HOOKS=1
 ENV INIT_CWD=/app
 # Prevent potential issues with incompatible husky installs in docker
 ENV HUSKY_SKIP_HOOKS=1
+# Ensure Node/NPM can find binaries installed via npx during build
+ENV PATH=/app/node_modules/.bin:$PATH
 
 # cloudron user/group are expected to be present in the base image
 # RUN addgroup --system cloudron && adduser --system --ingroup cloudron --no-create-home cloudron
@@ -29,9 +31,8 @@ COPY package.json package-lock.json* lerna.json* ./
 # This helps npm/lerna understand the workspace structure
 COPY packages/ packages/
 
-# Install ALL dependencies using npm ci for reproducibility
-# This installs devDependencies needed for build as well.
-RUN npm ci
+# Install ALL dependencies using npm ci, but skip potentially problematic postinstall scripts
+RUN npm ci --ignore-scripts
 
 # Explicitly run lerna bootstrap to ensure cross-package linking
 # The --ci flag respects package-lock and doesn't modify it
@@ -43,6 +44,10 @@ COPY . .
 
 # Remove Git/Husky AFTER copying everything and AFTER install/bootstrap
 RUN rm -rf .git .husky
+
+# Run download scripts AFTER all code is present
+RUN npm run download:content-type-cache || true
+RUN npm run download:h5p || true
 
 # Build the application (compile TS to JS, etc.)
 # This uses the 'build' script from the root package.json
