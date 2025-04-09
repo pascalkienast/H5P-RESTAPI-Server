@@ -19,21 +19,17 @@ chmod -R 755 /app/data/storage /app/data/logs
 export DATA_DIR="/app/data/storage"
 export LOG_DIR="/app/data/logs"
 
-# Change to app directory before running npm commands
+# Change to app directory (optional, as exec command is absolute)
 cd /app
 
-# Check if we need to build the application (assuming build output goes somewhere in /app, not /app/data)
-if [ ! -d "packages/h5p-server/build" ]; then
-  echo "==> Building application..."
-  # Run build processes individually to avoid errors stopping the startup
-  npm run build || echo "Warning: build failed"
-  #npm run build:h5p-server || echo "Warning: Server build failed"
- # npm run build:h5p-express || echo "Warning: Express build failed"
-  #npm run build:h5p-html-exporter || echo "Warning: HTML exporter build failed"
-  #npm run build:h5p-react || echo "Warning: React build failed"
- # npm run build:h5p-webcomponents || echo "Warning: Web components build failed"
-fi
+# === Removed Build Step ===
+# The application build should happen in the Dockerfile, not at runtime.
+# if [ ! -d "packages/h5p-server/build" ]; then
+#   echo "==> Building application..."
+#   npm run build || echo "Warning: build failed"
+# fi
 
 # Start the application as the cloudron user for security
 echo "==> Starting the application..."
-exec /usr/local/bin/gosu cloudron:cloudron npm start 
+# Ensure the build output path is correct based on your build process
+exec /usr/local/bin/gosu cloudron:cloudron node packages/h5p-main/build/express.js 

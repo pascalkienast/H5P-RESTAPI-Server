@@ -20,28 +20,35 @@ ENV INIT_CWD=/app
 # Cloudron requires this directory to be owned by the cloudron user
 RUN chown -R cloudron:cloudron /app/data
 
-# Copy the entire application into /app
+# Copy package files first for better layer caching
+COPY package.json package-lock.json* ./
+# Copy lerna config if it exists
+COPY lerna.json* ./
+# Copy workspace package.json files (adjust pattern if needed)
+COPY packages/*/*.json packages/
+
+# Install ALL dependencies (including devDependencies needed for build)
+# Ensure clean install in case of previous partial installs
+RUN rm -rf node_modules && npm install --ignore-scripts
+
+# Copy the rest of the application source code
 COPY . .
 
-# Remove Git and Husky-related files to prevent hooks from running
+# Remove Git and Husky-related files AFTER copying everything
 RUN rm -rf .git .husky
 
-# Remove husky prepare script from package.json
-RUN if grep -q "\"prepare\":" package.json; then \
-    sed -i 's/"prepare": "husky install",/"prepare": "",/g' package.json || true; \
-    fi
+# Build the application (compile TS to JS, etc.)
+# This uses the 'build' script from the root package.json
+RUN npm run build
 
-# Make start script executable (now located at /app/start.sh)
+# Optional: Prune devDependencies after build to reduce image size
+# RUN npm prune --production
+
+# Make start script executable
 RUN chmod +x /app/start.sh
-
-# Install dependencies - after all files are copied
-# Skip husky and git hooks
-RUN npm install --ignore-scripts && \
-    npm run download:content-type-cache || true && \
-    npm run download:h5p || true
 
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Command to run the application (now located at /app/start.sh)
+# Command to run the application
 CMD ["/app/start.sh"] 
